@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anthony Valdivieso — Brand & Film Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@300;400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --ink: #0e0c0a;
@@ -20,11 +20,49 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Space Mono', monospace;
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   overflow-x: hidden;
-  cursor: crosshair;
+  cursor: none;
 }
+a, button, .project, .servicio-row { cursor: none; }
+
+/* CUSTOM CURSOR */
+#cursor {
+  position: fixed; z-index: 9999;
+  pointer-events: none;
+  top: 0; left: 0;
+  mix-blend-mode: multiply;
+}
+#cursor-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ink);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background 0.2s;
+}
+#cursor-ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--ink);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: width 0.35s ease, height 0.35s ease, border-color 0.2s, transform 0.1s;
+  opacity: 0.5;
+}
+#cursor-label {
+  position: absolute;
+  transform: translate(16px, -50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink); white-space: nowrap;
+  opacity: 0; transition: opacity 0.2s;
+  background: var(--paper); padding: 2px 6px;
+}
+body.cursor-hover #cursor-dot { width: 12px; height: 12px; background: var(--gold); }
+body.cursor-hover #cursor-ring { width: 56px; height: 56px; border-color: var(--gold); opacity: 0.6; }
+body.cursor-hover #cursor-label { opacity: 1; }
+body.cursor-project #cursor-dot { width: 6px; height: 6px; background: var(--paper); }
+body.cursor-project #cursor-ring { width: 72px; height: 72px; border-color: var(--paper); opacity: 0.4; mix-blend-mode: normal; }
 
 /* NAV */
 nav {
@@ -37,7 +75,7 @@ nav {
   mix-blend-mode: normal;
 }
 .nav-logo {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.1rem; font-weight: 300;
   color: var(--ink); text-decoration: none;
   letter-spacing: 0.05em;
@@ -78,7 +116,7 @@ nav {
   gap: 4rem; align-items: end;
 }
 .hero-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: clamp(5rem, 10vw, 10rem);
   font-weight: 300; line-height: 0.9;
   letter-spacing: -0.02em;
@@ -93,7 +131,7 @@ nav {
 }
 .hero-role::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
 .hero-bio {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.3rem; font-weight: 300; font-style: italic;
   line-height: 1.6; color: var(--ink);
   margin-bottom: 2.5rem;
@@ -108,12 +146,11 @@ nav {
   display: flex; gap: 1.5rem; align-items: center;
 }
 .btn {
-  font-family: 'Space Mono', monospace;
+  font-family: 'DM Sans', sans-serif;
   font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
   text-decoration: none; padding: 0.8rem 1.5rem;
   border: 1px solid var(--ink); color: var(--ink);
   transition: background 0.2s, color 0.2s;
-  cursor: crosshair;
 }
 .btn:hover { background: var(--ink); color: var(--paper); }
 .btn-link {
@@ -131,7 +168,7 @@ nav {
 }
 .hero-bottom-stat { text-align: center; }
 .stat-num {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 2.5rem; font-weight: 300; color: var(--ink);
   display: block;
 }
@@ -155,7 +192,7 @@ nav {
 }
 .section-num { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.15em; }
 .section-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 2.5rem; font-weight: 300;
 }
 .section-note { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; font-style: italic; }
@@ -170,7 +207,6 @@ nav {
 .project {
   background: var(--paper);
   position: relative; overflow: hidden;
-  cursor: crosshair;
 }
 .project:hover .project-overlay { opacity: 1; }
 .project:hover .project-img-placeholder { transform: scale(1.03); }
@@ -196,7 +232,7 @@ nav {
   display: flex; align-items: center; justify-content: center;
 }
 .pg-text {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 8rem; font-weight: 300;
   opacity: 0.08; color: var(--paper);
   line-height: 1; user-select: none;
@@ -221,13 +257,13 @@ nav {
   transition: opacity 0.4s ease;
 }
 .project-overlay-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.8rem; font-weight: 300;
   color: var(--paper); margin-bottom: 0.5rem;
 }
 .project-overlay-tags { display: flex; gap: 8px; }
 .overlay-tag {
-  font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--gold); border: 1px solid rgba(184,149,74,0.4);
   padding: 0.2rem 0.6rem;
 }
@@ -238,7 +274,7 @@ nav {
   border-top: 1px solid var(--line);
 }
 .project-name {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.1rem; font-weight: 400;
 }
 .project-meta { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -268,7 +304,7 @@ nav {
 }
 .pilar-card:hover { background: #1a1610; }
 .pilar-card-num {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 5rem; font-weight: 300;
   color: rgba(184,149,74,0.12);
   line-height: 1; margin-bottom: 1.5rem;
@@ -276,7 +312,7 @@ nav {
 }
 .pilar-card-bar { width: 24px; height: 1px; background: var(--gold); margin-bottom: 1.5rem; }
 .pilar-card-name {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 2rem; font-weight: 300;
   color: var(--paper); margin-bottom: 0.5rem;
 }
@@ -302,14 +338,13 @@ nav {
   padding: 2rem 0;
   border-bottom: 1px solid var(--line);
   transition: background 0.2s;
-  cursor: crosshair;
 }
 .servicio-row:first-child { border-top: 1px solid var(--line); }
 .servicio-row:hover { background: rgba(14,12,10,0.03); }
 .servicio-row:hover .servicio-arrow { transform: translateX(4px); }
 .servicio-n { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); }
 .servicio-name {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.8rem; font-weight: 300;
 }
 .servicio-desc { font-size: 0.72rem; line-height: 1.8; color: var(--muted); }
@@ -339,7 +374,7 @@ nav {
   pointer-events: none;
 }
 .nicho-right-bg-text {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 14rem; font-weight: 300;
   color: rgba(0,0,0,0.08); line-height: 1;
   user-select: none; white-space: nowrap;
@@ -350,7 +385,7 @@ nav {
   color: rgba(242,237,228,0.5); margin-bottom: 2rem;
 }
 .nicho-right-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 3.5rem; font-weight: 300; line-height: 1.1;
   color: var(--paper);
 }
@@ -368,7 +403,7 @@ nav {
   content: '→'; color: rgba(242,237,228,0.35); flex-shrink: 0;
 }
 .nicho-left-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 2.5rem; font-weight: 300; line-height: 1.2;
   margin-bottom: 2rem;
 }
@@ -384,7 +419,7 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 .contact-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: clamp(3rem, 6vw, 6rem);
   font-weight: 300; line-height: 1;
   letter-spacing: -0.02em;
@@ -393,7 +428,7 @@ nav {
 .contact-right {}
 .contact-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; display: block; }
 .contact-email {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;
   font-size: 1.5rem; font-weight: 300;
   color: var(--ink); text-decoration: none;
   border-bottom: 1px solid var(--ink); padding-bottom: 4px;
@@ -443,6 +478,12 @@ footer {
 </head>
 <body>
 
+<div id="cursor">
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <div id="cursor-label"></div>
+</div>
+
 <nav>
   <a href="#" class="nav-logo">Anthony Valdivieso</a>
   <span class="nav-center">Brand & Film Studio · MX</span>
@@ -476,8 +517,8 @@ footer {
         <span class="tag">Brand Partner</span>
       </div>
       <div class="hero-cta">
-        <a href="#contacto" class="btn">Trabajemos juntos</a>
-        <a href="#work" class="btn-link">Ver portafolio</a>
+        <a href="#contacto" class="btn" data-cursor="Hablemos">Trabajemos juntos</a>
+        <a href="#work" class="btn-link" data-cursor="Ver">Ver portafolio</a>
       </div>
     </div>
   </div>
@@ -511,7 +552,7 @@ footer {
   </div>
 
   <div class="portfolio-grid">
-    <div class="project p1 reveal">
+    <div class="project p1 reveal" onclick="window.location='proyecto-la-raiz.html'" data-cursor="Ver proyecto" style="cursor:none">
       <div class="project-img-placeholder">
         <div class="project-graphic">
           <div class="pg-text">MARCA</div>
@@ -533,7 +574,7 @@ footer {
       </div>
     </div>
 
-    <div class="project p2 reveal">
+    <div class="project p2 reveal" onclick="window.location='proyecto-casa-brava.html'" data-cursor="Ver proyecto" style="cursor:none">
       <div class="project-img-placeholder">
         <div class="project-graphic">
           <div class="pg-text">FILM</div>
@@ -554,7 +595,7 @@ footer {
       </div>
     </div>
 
-    <div class="project p3 reveal">
+    <div class="project p3 reveal" onclick="window.location='proyecto-mercado-noma.html'" data-cursor="Ver proyecto" style="cursor:none">
       <div class="project-img-placeholder">
         <div class="project-graphic">
           <div class="pg-text">ID</div>
@@ -575,7 +616,7 @@ footer {
       </div>
     </div>
 
-    <div class="project p4 reveal">
+    <div class="project p4 reveal" onclick="window.location='proyecto-fogon.html'" data-cursor="Ver proyecto" style="cursor:none">
       <div class="project-img-placeholder">
         <div class="project-graphic">
           <div class="pg-text">SISTEMA</div>
@@ -695,18 +736,18 @@ footer {
   </div>
   <div class="contact-right reveal">
     <span class="contact-label">Hablemos</span>
-    <a href="mailto:hola@anthonyvaldivieso.com" class="contact-email">hola@anthonyvaldivieso.com</a>
+    <a href="mailto:TU_EMAIL_AQUI" class="contact-email">hola@anthonyvaldivieso.com</a>
     <div class="contact-social">
-      <a href="#" class="social-row">
+      <a href="TU_INSTAGRAM_AQUI" target="_blank" class="social-row">
         <span>Instagram</span>
         <span class="social-arrow">→</span>
       </a>
-      <a href="#" class="social-row">
+      <a href="TU_WHATSAPP_AQUI" target="_blank" class="social-row">
         <span>WhatsApp</span>
         <span class="social-arrow">→</span>
       </a>
-      <a href="#" class="social-row">
-        <span>Behance</span>
+      <a href="https://www.google.com/maps/place/SUPER+Q+T403+-+ZAKIA/@20.6684468,-100.3215798,17z/data=!4m6!3m5!1s0x85d35d001d1351d1:0x6fd87d10d13ceb3f!8m2!3d20.6631465!4d-100.3182968!16s%2Fg%2F11wfhw2c1f?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="social-row">
+        <span>Google Maps</span>
         <span class="social-arrow">→</span>
       </a>
     </div>
@@ -720,6 +761,7 @@ footer {
 </footer>
 
 <script>
+// REVEAL ON SCROLL
 const obs = new IntersectionObserver((entries) => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
@@ -729,6 +771,60 @@ const obs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// CUSTOM CURSOR
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+const label = document.getElementById('cursor-label');
+
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+});
+
+function lerpRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  label.style.left = rx + 'px';
+  label.style.top = ry + 'px';
+  requestAnimationFrame(lerpRing);
+}
+lerpRing();
+
+// Hover states
+const hoverEls = document.querySelectorAll('a, button, .servicio-row');
+hoverEls.forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    const lbl = el.dataset.cursor || 'Ver';
+    label.textContent = lbl;
+    document.body.classList.add('cursor-hover');
+  });
+  el.addEventListener('mouseleave', () => {
+    document.body.classList.remove('cursor-hover');
+  });
+});
+
+const projectEls = document.querySelectorAll('.project');
+projectEls.forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    document.body.classList.add('cursor-project');
+    document.body.classList.remove('cursor-hover');
+    label.textContent = 'Ver proyecto';
+  });
+  el.addEventListener('mouseleave', () => {
+    document.body.classList.remove('cursor-project');
+  });
+});
+
+// Hide on leave
+document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
 </script>
 </body>
 </html>
