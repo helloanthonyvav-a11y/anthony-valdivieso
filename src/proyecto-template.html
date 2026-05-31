@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Raíz — Anthony Valdivieso</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@300;400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0c0a;
+  --paper: #f2ede4;
+  --gold: #b8954a;
+  --rust: #7a4f2d;
+  --sage: #3d5a47;
+  --muted: #9a9080;
+  --line: rgba(14,12,10,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  overflow-x: hidden;
+  cursor: none;
+}
+a, button { cursor: none; }
+
+/* CURSOR */
+#cursor { position: fixed; z-index: 9999; pointer-events: none; top: 0; left: 0; mix-blend-mode: multiply; }
+#cursor-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); position: absolute; transform: translate(-50%,-50%); transition: width .2s, height .2s, background .2s; }
+#cursor-ring { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--ink); position: absolute; transform: translate(-50%,-50%); transition: width .35s ease, height .35s ease, border-color .2s; opacity: .5; }
+#cursor-label { position: absolute; transform: translate(16px,-50%); font-family: 'DM Sans', sans-serif; font-size: .55rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; opacity: 0; transition: opacity .2s; background: var(--paper); padding: 2px 6px; }
+body.cursor-hover #cursor-dot { width: 12px; height: 12px; background: var(--gold); }
+body.cursor-hover #cursor-ring { width: 56px; height: 56px; border-color: var(--gold); opacity: .6; }
+body.cursor-hover #cursor-label { opacity: 1; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 2.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.nav-back {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  display: flex; align-items: center; gap: .6rem;
+  transition: color .2s;
+}
+.nav-back:hover { color: var(--ink); }
+.nav-back::before { content: '←'; }
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem; font-weight: 400;
+  color: var(--ink); text-decoration: none;
+}
+.nav-index { font-size: .6rem; letter-spacing: .15em; color: var(--muted); }
+
+/* HERO PROYECTO */
+.project-hero {
+  min-height: 100vh;
+  display: grid; grid-template-rows: 1fr auto;
+  padding: 7rem 2.5rem 4rem;
+  border-bottom: 1px solid var(--line);
+}
+.project-hero-top {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: end;
+}
+.project-category {
+  font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: .8rem;
+}
+.project-category::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+.project-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 7rem);
+  font-weight: 400; line-height: .95;
+  letter-spacing: -.02em;
+}
+.project-right { padding-bottom: .5rem; }
+.project-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 300; font-style: italic;
+  line-height: 1.7; color: var(--muted); margin-bottom: 2.5rem;
+}
+.project-meta-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--line);
+  margin-top: 2rem;
+}
+.meta-item {
+  background: var(--paper);
+  padding: .8rem 1rem;
+}
+.meta-label { font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+.meta-value { font-family: 'Syne', sans-serif; font-size: .9rem; font-weight: 400; color: var(--ink); }
+
+.project-hero-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 4rem; padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; border: 1px solid var(--line); padding: .3rem .7rem; color: var(--muted); }
+.project-num { font-family: 'Syne', sans-serif; font-size: 4rem; font-weight: 400; color: rgba(14,12,10,.06); line-height: 1; }
+
+/* COVER IMAGE */
+.project-cover {
+  width: 100%;
+  aspect-ratio: 16/9;
+  /* ===== REEMPLAZA ESTO CON TU IMAGEN PRINCIPAL ===== */
+  /* background: url('TU_IMAGEN_COVER.jpg') center/cover no-repeat; */
+  background: #1a1410;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.cover-placeholder {
+  font-family: 'Syne', sans-serif;
+  font-size: 10rem; font-weight: 400;
+  color: rgba(242,237,228,.05); user-select: none;
+}
+.cover-badge {
+  position: absolute; bottom: 2rem; left: 2.5rem;
+  font-size: .55rem; letter-spacing: .15em; text-transform: uppercase;
+  border: 1px solid rgba(242,237,228,.2); color: rgba(242,237,228,.4);
+  padding: .3rem .7rem;
+}
+
+/* CONTENT */
+.project-content { max-width: 1200px; margin: 0 auto; }
+
+/* CONCEPTO */
+.section-concepto {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 6rem; padding: 6rem 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.concepto-label { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+.concepto-title { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 400; line-height: 1.2; }
+.concepto-body { font-size: .9rem; line-height: 1.9; color: var(--muted); }
+.concepto-body p { margin-bottom: 1.2rem; }
+.concepto-body strong { color: var(--ink); font-weight: 500; }
+
+/* IMAGEN GRID */
+.image-grid {
+  padding: 0 2.5rem 6rem;
+  display: grid;
+  grid-template-columns: repeat(12,1fr);
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.img-block {
+  background: #1e1a14;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+/* ===== REEMPLAZA CADA img-block con tu imagen ===== */
+/* Agrega: style="background: url('TU_IMAGEN.jpg') center/cover no-repeat;" */
+.img-block-placeholder {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem; font-weight: 400;
+  color: rgba(242,237,228,.04); user-select: none;
+}
+.img-label {
+  position: absolute; bottom: .8rem; left: .8rem;
+  font-size: .5rem; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(242,237,228,.25);
+}
+
+.ib-1 { grid-column: 1/8; height: 440px; }
+.ib-2 { grid-column: 8/13; height: 440px; }
+.ib-3 { grid-column: 1/5; height: 320px; }
+.ib-4 { grid-column: 5/9; height: 320px; }
+.ib-5 { grid-column: 9/13; height: 320px; }
+.ib-6 { grid-column: 1/13; height: 500px; background: #2d3d35; }
+
+/* VIDEO */
+.section-video {
+  padding: 6rem 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.video-label { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: flex; align-items: center; gap: .8rem; }
+.video-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+.video-wrapper {
+  width: 100%; aspect-ratio: 16/9;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+/* ===== REEMPLAZA ESTO CON TU VIDEO ===== */
+/* <iframe src="TU_VIDEO_EMBED" ... /> o <video src="TU_VIDEO.mp4" controls /> */
+.video-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  color: rgba(242,237,228,.3);
+}
+.play-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 1px solid rgba(242,237,228,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: rgba(242,237,228,.4);
+}
+.video-placeholder span { font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; }
+
+/* PROCESO */
+.section-proceso {
+  padding: 6rem 2.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink);
+}
+.proceso-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 4rem; padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(242,237,228,.08);
+}
+.proceso-title { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 400; color: var(--paper); }
+.proceso-note { font-size: .6rem; letter-spacing: .1em; color: rgba(242,237,228,.3); }
+.proceso-steps {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 1px; background: rgba(242,237,228,.08);
+}
+.paso {
+  background: var(--ink); padding: 2rem 1.5rem;
+  transition: background .3s;
+}
+.paso:hover { background: #1a1610; }
+.paso-num { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 400; color: rgba(184,149,74,.15); margin-bottom: 1rem; line-height: 1; }
+.paso-bar { width: 20px; height: 1px; background: var(--gold); margin-bottom: 1.2rem; }
+.paso-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 400; color: var(--paper); margin-bottom: .6rem; }
+/* ===== EDITA EL TEXTO DE CADA PASO ===== */
+.paso-desc { font-size: .72rem; line-height: 1.8; color: rgba(242,237,228,.4); }
+
+/* NAV PROYECTOS */
+.project-nav {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+.pnav-item {
+  padding: 3rem 2.5rem;
+  text-decoration: none; color: var(--ink);
+  border-right: 1px solid var(--line);
+  transition: background .2s;
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.pnav-item:last-child { border-right: none; text-align: right; }
+.pnav-item:hover { background: rgba(14,12,10,.03); }
+.pnav-label { font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+.pnav-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 400; }
+.pnav-arrow { font-size: 1rem; color: var(--gold); margin-top: .5rem; }
+
+/* FOOTER */
+footer { padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; font-size: .6rem; letter-spacing: .1em; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+@media(max-width:900px){
+  nav { padding: 1.2rem 1.5rem; } .nav-index { display: none; }
+  .project-hero { padding: 6rem 1.5rem 3rem; }
+  .project-hero-top { grid-template-columns: 1fr; gap: 2rem; }
+  .project-title { font-size: 3.5rem; }
+  .section-concepto { grid-template-columns: 1fr; padding: 4rem 1.5rem; gap: 2rem; }
+  .image-grid { padding: 0 1.5rem 4rem; grid-template-columns: 1fr; }
+  .ib-1,.ib-2,.ib-3,.ib-4,.ib-5,.ib-6 { grid-column: 1; height: 260px; }
+  .section-video,.section-proceso { padding: 4rem 1.5rem; }
+  .proceso-steps { grid-template-columns: 1fr 1fr; }
+  .project-nav { grid-template-columns: 1fr; }
+  .pnav-item { border-right: none; border-bottom: 1px solid var(--line); }
+  .pnav-item:last-child { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor">
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <div id="cursor-label"></div>
+</div>
+
+<nav>
+  <!-- ===== CAMBIA el href al nombre real de tu index ===== -->
+  <a href="anthony-valdivieso.html" class="nav-back" data-cursor="Volver">Portafolio</a>
+  <a href="anthony-valdivieso.html" class="nav-logo">Anthony Valdivieso</a>
+  <span class="nav-index">Proyecto 01 / 04</span>
+</nav>
+
+<!-- HERO -->
+<section class="project-hero">
+  <div class="project-hero-top">
+    <div>
+      <!-- ===== EDITA: categoría y título del proyecto ===== -->
+      <p class="project-category">Identidad visual · Gastronomía</p>
+      <h1 class="project-title">La<br>Raíz</h1>
+    </div>
+    <div class="project-right reveal">
+      <!-- ===== EDITA: descripción corta del proyecto ===== -->
+      <p class="project-desc">"Una marca enraizada en la tradición — construida trazo a trazo para vivir en cada objeto, cada espacio y cada plato."</p>
+      <div class="project-meta-grid">
+        <!-- ===== EDITA: metadatos del proyecto ===== -->
+        <div class="meta-item"><div class="meta-label">Cliente</div><div class="meta-value">La Raíz Resto</div></div>
+        <div class="meta-item"><div class="meta-label">Año</div><div class="meta-value">2025</div></div>
+        <div class="meta-item"><div class="meta-label">Servicios</div><div class="meta-value">Branding · Film</div></div>
+        <div class="meta-item"><div class="meta-label">Duración</div><div class="meta-value">3 meses</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="project-hero-bottom">
+    <div class="project-tags">
+      <!-- ===== EDITA: tags del proyecto ===== -->
+      <span class="tag">Identidad visual</span>
+      <span class="tag">Ilustración</span>
+      <span class="tag">Filmmaking</span>
+      <span class="tag">Gastronomía</span>
+    </div>
+    <div class="project-num">01</div>
+  </div>
+</section>
+
+<!-- COVER IMAGE -->
+<div class="project-cover">
+  <!-- ===== REEMPLAZA: agrega style="background: url('TU_IMAGEN.jpg') center/cover no-repeat;" al div.project-cover ===== -->
+  <div class="cover-placeholder">LR</div>
+  <div class="cover-badge">Imagen principal del proyecto</div>
+</div>
+
+<!-- CONCEPTO -->
+<section class="section-concepto">
+  <div class="reveal">
+    <p class="concepto-label">El concepto</p>
+    <!-- ===== EDITA: título de concepto ===== -->
+    <h2 class="concepto-title">Por qué cada trazo existe</h2>
+  </div>
+  <div class="concepto-body reveal">
+    <!-- ===== EDITA: texto de conceptualización — explica tu proceso, decisiones, por qués ===== -->
+    <p>Escribe aquí el <strong>concepto detrás de la marca</strong>. ¿Qué te pidió el cliente? ¿Qué problema tenía su identidad anterior? ¿Qué emoción quería proyectar?</p>
+    <p>Explica las <strong>decisiones de diseño</strong> — por qué ese símbolo, por qué esa paleta, qué significa cada elemento. Este es tu pilar "El concepto" aplicado al proyecto real.</p>
+    <p>También puedes hablar del proceso de <strong>ilustración</strong> — cómo pasaste del papel al digital, qué herramientas usaste, cuántas iteraciones hubo antes de llegar al resultado final.</p>
+  </div>
+</section>
+
+<!-- GALERÍA DE IMÁGENES -->
+<div class="image-grid">
+  <!-- ===== REEMPLAZA cada img-block con tu imagen real ===== -->
+  <!-- Ejemplo: <div class="img-block ib-1" style="background: url('imagen1.jpg') center/cover no-repeat;"> -->
+  <div class="img-block ib-1 reveal">
+    <div class="img-block-placeholder">01</div>
+    <div class="img-label">Logotipo principal</div>
+  </div>
+  <div class="img-block ib-2 reveal">
+    <div class="img-block-placeholder">02</div>
+    <div class="img-label">Paleta y tipografía</div>
+  </div>
+  <div class="img-block ib-3 reveal">
+    <div class="img-block-placeholder">03</div>
+    <div class="img-label">Aplicación — menú</div>
+  </div>
+  <div class="img-block ib-4 reveal" style="background:#2a2018;">
+    <div class="img-block-placeholder">04</div>
+    <div class="img-label">Aplicación — packaging</div>
+  </div>
+  <div class="img-block ib-5 reveal" style="background:#1e2d25;">
+    <div class="img-block-placeholder">05</div>
+    <div class="img-label">Ilustración detalle</div>
+  </div>
+  <div class="img-block ib-6 reveal">
+    <div class="img-block-placeholder">06</div>
+    <div class="img-label">Marca en espacio real</div>
+  </div>
+</div>
+
+<!-- VIDEO -->
+<section class="section-video reveal">
+  <p class="video-label">Film de marca</p>
+  <div class="video-wrapper">
+    <!-- ===== REEMPLAZA con tu video ===== -->
+    <!-- Opción 1 — YouTube: <iframe width="100%" height="100%" src="https://www.youtube.com/embed/TU_ID" frameborder="0" allowfullscreen></iframe> -->
+    <!-- Opción 2 — Vimeo: <iframe src="https://player.vimeo.com/video/TU_ID" width="100%" height="100%" frameborder="0" allowfullscreen></iframe> -->
+    <!-- Opción 3 — Archivo propio: <video src="TU_VIDEO.mp4" controls style="width:100%;height:100%;object-fit:cover;"></video> -->
+    <div class="video-placeholder">
+      <div class="play-btn">▶</div>
+      <span>Inserta tu video aquí</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="section-proceso">
+  <div class="proceso-header reveal">
+    <h2 class="proceso-title">El proceso</h2>
+    <span class="proceso-note">La mano · El sistema · El concepto</span>
+  </div>
+  <div class="proceso-steps">
+    <div class="paso reveal">
+      <div class="paso-num">01</div>
+      <div class="paso-bar"></div>
+      <!-- ===== EDITA: pasos de tu proceso real ===== -->
+      <h3 class="paso-name">Brief</h3>
+      <p class="paso-desc">Describe cómo fue la primera reunión con el cliente, qué te contó, qué necesitaba.</p>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">02</div>
+      <div class="paso-bar"></div>
+      <h3 class="paso-name">Boceto</h3>
+      <p class="paso-desc">El sketchbook, los primeros trazos a mano. Cómo llegaste a la dirección correcta.</p>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">03</div>
+      <div class="paso-bar"></div>
+      <h3 class="paso-name">Construcción</h3>
+      <p class="paso-desc">Del papel al digital. Las decisiones de diseño, la paleta, el sistema tipográfico.</p>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">04</div>
+      <div class="paso-bar"></div>
+      <h3 class="paso-name">Entrega viva</h3>
+      <p class="paso-desc">La marca aplicada en el mundo real — objetos, espacios, contenido filmado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NAVEGACIÓN ENTRE PROYECTOS -->
+<nav class="project-nav">
+  <!-- ===== CAMBIA los href al archivo real del proyecto anterior/siguiente ===== -->
+  <a href="#" class="pnav-item" data-cursor="Anterior">
+    <span class="pnav-label">← Proyecto anterior</span>
+    <span class="pnav-title">Fogón & Co.</span>
+    <span class="pnav-arrow">←</span>
+  </a>
+  <a href="#" class="pnav-item" data-cursor="Siguiente">
+    <span class="pnav-label">Proyecto siguiente →</span>
+    <span class="pnav-title">Casa Brava</span>
+    <span class="pnav-arrow">→</span>
+  </a>
+</nav>
+
+<footer>
+  <span>© 2026 Anthony Valdivieso</span>
+  <span>Brand & Film Studio · México</span>
+  <span>Diseño · Film · Gastronomía</span>
+</footer>
+
+<script>
+// REVEAL
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e,i) => {
+    if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*60); obs.unobserve(e.target); }
+  });
+},{ threshold:.08 });
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// CURSOR
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+const label = document.getElementById('cursor-label');
+const cursorEl = document.getElementById('cursor');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+(function lerpRing(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; label.style.left=rx+'px'; label.style.top=ry+'px'; requestAnimationFrame(lerpRing); })();
+document.querySelectorAll('a, button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ label.textContent=el.dataset.cursor||'Ver'; document.body.classList.add('cursor-hover'); });
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
+});
+document.addEventListener('mouseleave',()=>cursorEl.style.opacity='0');
+document.addEventListener('mouseenter',()=>cursorEl.style.opacity='1');
+</script>
+</body>
+</html>
