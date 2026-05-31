@@ -188,25 +188,86 @@ nav {
 }
 .video-label { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: flex; align-items: center; gap: .8rem; }
 .video-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
-.video-wrapper {
+
+/* Preview card */
+.video-preview {
   width: 100%; aspect-ratio: 16/9;
   background: var(--ink);
+  position: relative; overflow: hidden;
+  cursor: none;
+}
+.video-preview video.bg-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity .6s ease;
+}
+.video-preview.hovered video.bg-video { opacity: .55; }
+.video-preview-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1.2rem;
+  background: rgba(14,12,10,.5);
+  transition: background .4s ease;
+  z-index: 2;
+}
+.video-preview.hovered .video-preview-overlay { background: rgba(14,12,10,.2); }
+.play-btn {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 1px solid rgba(242,237,228,.3);
   display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: var(--paper);
+  transition: transform .3s ease, border-color .3s, background .3s;
+  background: rgba(14,12,10,.4);
+}
+.video-preview.hovered .play-btn {
+  transform: scale(1.12);
+  border-color: var(--gold);
+  background: rgba(184,149,74,.15);
+  color: var(--gold);
+}
+.video-preview-label {
+  font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(242,237,228,.45); transition: color .3s;
+}
+.video-preview.hovered .video-preview-label { color: var(--gold); }
+.video-duration {
+  position: absolute; bottom: 1.2rem; right: 1.5rem;
+  font-size: .6rem; letter-spacing: .1em;
+  color: rgba(242,237,228,.3); z-index: 3;
+}
+.video-progress {
+  position: absolute; bottom: 0; left: 0;
+  height: 2px; background: var(--gold);
+  width: 0%; transition: none; z-index: 3;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(14,12,10,.96);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+.lightbox.active { opacity: 1; pointer-events: all; }
+.lightbox-inner {
+  width: 90vw; max-width: 1100px;
   position: relative;
 }
-/* ===== REEMPLAZA ESTO CON TU VIDEO ===== */
-/* <iframe src="TU_VIDEO_EMBED" ... /> o <video src="TU_VIDEO.mp4" controls /> */
-.video-placeholder {
-  display: flex; flex-direction: column; align-items: center; gap: 1rem;
-  color: rgba(242,237,228,.3);
+.lightbox-inner video {
+  width: 100%; aspect-ratio: 16/9;
+  object-fit: contain; display: block;
 }
-.play-btn {
-  width: 64px; height: 64px; border-radius: 50%;
-  border: 1px solid rgba(242,237,228,.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; color: rgba(242,237,228,.4);
+.lightbox-close {
+  position: absolute; top: -2.5rem; right: 0;
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: rgba(242,237,228,.4); cursor: none;
+  display: flex; align-items: center; gap: .5rem;
+  transition: color .2s;
 }
-.video-placeholder span { font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; }
+.lightbox-close:hover { color: var(--paper); }
+.lightbox-close::before { content: '✕'; font-size: .9rem; }
 
 /* PROCESO */
 .section-proceso {
@@ -379,17 +440,30 @@ footer { padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; 
 <!-- VIDEO -->
 <section class="section-video reveal">
   <p class="video-label">Film de marca</p>
-  <div class="video-wrapper">
-    <!-- ===== REEMPLAZA con tu video ===== -->
-    <!-- Opción 1 — YouTube: <iframe width="100%" height="100%" src="https://www.youtube.com/embed/TU_ID" frameborder="0" allowfullscreen></iframe> -->
-    <!-- Opción 2 — Vimeo: <iframe src="https://player.vimeo.com/video/TU_ID" width="100%" height="100%" frameborder="0" allowfullscreen></iframe> -->
-    <!-- Opción 3 — Archivo propio: <video src="TU_VIDEO.mp4" controls style="width:100%;height:100%;object-fit:cover;"></video> -->
-    <div class="video-placeholder">
+
+  <!-- ===== REEMPLAZA "TU_VIDEO.mp4" con la ruta real de tu archivo ===== -->
+  <div class="video-preview" id="videoPreview">
+    <!-- Video en silencio para el hover preview -->
+    <video class="bg-video" id="bgVideo" src="TU_VIDEO.mp4" muted loop playsinline preload="metadata"></video>
+
+    <div class="video-preview-overlay">
       <div class="play-btn">▶</div>
-      <span>Inserta tu video aquí</span>
+      <span class="video-preview-label">Ver film completo</span>
     </div>
+
+    <div class="video-duration" id="videoDuration">—</div>
+    <div class="video-progress" id="videoProgress"></div>
   </div>
 </section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <div class="lightbox-close" id="lightboxClose">Cerrar</div>
+    <!-- ===== REEMPLAZA "TU_VIDEO.mp4" con la ruta real de tu archivo ===== -->
+    <video id="lightboxVideo" src="TU_VIDEO.mp4" controls playsinline></video>
+  </div>
+</div>
 
 <!-- PROCESO -->
 <section class="section-proceso">
@@ -456,7 +530,59 @@ const obs = new IntersectionObserver((entries) => {
 },{ threshold:.08 });
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// CURSOR
+// VIDEO PREVIEW + LIGHTBOX
+const preview = document.getElementById('videoPreview');
+const bgVideo = document.getElementById('bgVideo');
+const lightbox = document.getElementById('lightbox');
+const lbVideo = document.getElementById('lightboxVideo');
+const lbClose = document.getElementById('lightboxClose');
+const progress = document.getElementById('videoProgress');
+const duration = document.getElementById('videoDuration');
+
+// Format seconds to m:ss
+function fmt(s){ const m=Math.floor(s/60); return m+':'+(Math.floor(s%60)+'').padStart(2,'0'); }
+
+// Show duration once metadata loads
+bgVideo.addEventListener('loadedmetadata', () => {
+  duration.textContent = fmt(bgVideo.duration);
+});
+
+// Hover — play silent preview
+preview.addEventListener('mouseenter', () => {
+  preview.classList.add('hovered');
+  bgVideo.play().catch(()=>{});
+});
+preview.addEventListener('mouseleave', () => {
+  preview.classList.remove('hovered');
+  bgVideo.pause();
+  bgVideo.currentTime = 0;
+  progress.style.width = '0%';
+});
+
+// Progress bar while previewing
+bgVideo.addEventListener('timeupdate', () => {
+  if(bgVideo.duration) progress.style.width = (bgVideo.currentTime / bgVideo.duration * 100) + '%';
+});
+
+// Click — open lightbox with sound
+preview.addEventListener('click', () => {
+  lightbox.classList.add('active');
+  lbVideo.play();
+  document.body.style.overflow = 'hidden';
+});
+
+// Close lightbox
+function closeLightbox(){
+  lightbox.classList.remove('active');
+  lbVideo.pause();
+  lbVideo.currentTime = 0;
+  document.body.style.overflow = '';
+}
+lbClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
 const label = document.getElementById('cursor-label');
